@@ -1,9 +1,9 @@
+from time import sleep
+from datetime import datetime
+from django.urls import reverse
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from posts.models import Group, Post
-from django.urls import reverse
-from datetime import datetime
-from time import sleep
 
 User = get_user_model()
 

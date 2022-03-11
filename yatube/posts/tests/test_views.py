@@ -1,13 +1,12 @@
 import shutil
 import tempfile
+from datetime import datetime
+from django.urls import reverse
+from django.conf import settings
 from django.test import TestCase, Client, override_settings
 from django.contrib.auth import get_user_model
-from posts.models import Group, Post, Follow
-from django.urls import reverse
-from datetime import datetime
-from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.cache import cache
+from posts.models import Group, Post, Follow
 
 User = get_user_model()
 
@@ -274,47 +273,6 @@ class CommentViewTest(TestCase):
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
-class CacheTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.author = User.objects.create_user(username='author')
-        cls.authorized_author = Client()
-        cls.authorized_author.force_login(cls.author)
-
-        cls.post = Post.objects.create(
-            author=cls.author,
-            pub_date=datetime.now(),
-            text='1 Тестовый пост 1',
-        )
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-
-    def test_cache_index(self):
-        """
-        Тест для проверки кеширования главной страницы
-        """
-        response_bfr = self.authorized_author.get(reverse('posts:index'))
-        post2 = Post.objects.create(text='2 тест пост 2', author=self.author)
-        response_aft = self.authorized_author.get(reverse('posts:index'))
-        self.assertEqual(len(response_aft.context['page_obj']), 2,)
-
-        Post.objects.filter(id=post2.id).delete()
-        response_aft_del = self.authorized_author.get(reverse('posts:index'))
-        self.assertEqual(response_aft.content, response_aft_del.content)
-
-        cache.clear()
-        response_aft_clr = self.authorized_author.get(reverse('posts:index'))
-        self.assertEqual(len(response_aft_clr.context['page_obj']), 1,)
-        self.assertEqual(
-            response_aft_clr.context['paginator'].count,
-            response_bfr.context['paginator'].count)
-
-
-@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class FollowTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -349,26 +307,6 @@ class FollowTest(TestCase):
             user=self.user).exists()
         )
 
-    def test_authorized_user_can_unfollow(self):
-        """
-        Авторизованный пользователь может удалять других пользователей
-        из подписок
-        """
-        self.authorized_user.get(
-            reverse('posts:profile_follow', kwargs={'username': self.author})
-        )
-        self.assertTrue(Follow.objects.filter(
-            author=self.author,
-            user=self.user).exists()
-        )
-        self.authorized_user.get(reverse(
-            'posts:profile_unfollow', kwargs={'username': self.author})
-        )
-        self.assertFalse(Follow.objects.filter(
-            author=self.author,
-            user=self.user).exists()
-        )
-
     def test_followed_author_posts_shows_in_followers_feed(self):
         """
         Новая запись пользователя появляется в ленте тех, кто на него подписан
@@ -382,3 +320,44 @@ class FollowTest(TestCase):
         self.assertEqual(followed_post, self.post)
         response = self.authorized_author.get(reverse('posts:follow_index'))
         self.assertEqual(response.context['paginator'].count, 0)
+
+
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
+class UnFollowTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.author = User.objects.create_user(username='author')
+        cls.authorized_author = Client()
+        cls.authorized_author.force_login(cls.author)
+        cls.user = User.objects.create_user(username='follower')
+        cls.authorized_user = Client()
+        cls.authorized_user.force_login(cls.user)
+
+        cls.post = Post.objects.create(
+            author=cls.author,
+            pub_date=datetime.now(),
+            text='1 Тестовый пост 1',
+        )
+        cls.follow = Follow.objects.create(
+            user=cls.user,
+            author=cls.author
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+
+    def test_authorized_user_can_unfollow(self):
+        """
+        Авторизованный пользователь может удалять других пользователей
+        из подписок
+        """
+        self.authorized_user.get(reverse(
+            'posts:profile_unfollow', kwargs={'username': self.author})
+        )
+        self.assertFalse(Follow.objects.filter(
+            author=self.author,
+            user=self.user).exists()
+        )

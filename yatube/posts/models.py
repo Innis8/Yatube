@@ -64,7 +64,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-pub_date',)
-        # ordering = ('pk',)
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
@@ -76,18 +75,22 @@ class Comment(CreatedModel):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        verbose_name='Пост комментария',
+        help_text='Пост, к которому относится комментарий'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments'
+        verbose_name='Автор',
+        related_name='comments',
+        help_text='Автор комментария'
     )
     text = models.TextField(
+        max_length=1000,
         verbose_name='Текст комментария',
         help_text='Написать комментарий'
     )
-    # created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-created',)
@@ -101,13 +104,15 @@ class Comment(CreatedModel):
 class Follow(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name="follower",
-        verbose_name="Подписчик"
+        related_name='follower',
+        verbose_name='Подписчик',
+        help_text='Подпишитесь на избранного автора'
     )
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name="following",
-        verbose_name="Избранный автор"
+        related_name='following',
+        verbose_name='Избранный автор',
+        help_text='На избранного автора подписываются'
     )
 
     class Meta:
@@ -116,7 +121,7 @@ class Follow(models.Model):
         verbose_name_plural = 'Избранные авторы'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'],
+                fields=('user', 'author'),
                 name='unique_follower'
             )
         ]

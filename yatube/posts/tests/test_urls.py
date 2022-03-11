@@ -2,7 +2,6 @@ from http import HTTPStatus
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from posts.models import Group, Post
-# from django.core.cache import cache
 
 User = get_user_model()
 
@@ -49,7 +48,6 @@ class PostURLTest(TestCase):
 
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон и доступен всем."""
-        # cache.clear()
         templates_url_names = {
             'posts/index.html': '/',
             'posts/group_list.html': '/group/test-slug/',
@@ -64,12 +62,41 @@ class PostURLTest(TestCase):
                 )
                 self.assertTemplateUsed(response, template)
 
-    def test_authorized_urls_uses_correct_template(self):
-        """URL-адрес /create/ использует соответствующий шаблон и доступен
-        только авторизованным.
+    def test_authorized_existing_pages(self):
+        """URL-адреса доступны авторизованным пользователям и возвращают
+        статус код 200 (по иному HTTPStatus.OK)
         """
-        response = self.authorized_client.get('/create/')
-        self.assertTemplateUsed(response, 'posts/create_post.html')
+        addresses = {
+            HTTPStatus.OK: '/profile/author/follow/',
+            HTTPStatus.OK: '/profile/author/unfollow/',
+            HTTPStatus.OK: f'/posts/{PostURLTest.post.id}/comment/',
+            HTTPStatus.OK: '/follow/',
+            HTTPStatus.OK: '/create/',
+        }
+        for url, address in addresses.items():
+            with self.subTest(address=address):
+                response = self.authorized_client.get(address)
+                self.assertEqual(response.status_code, url)
+
+    def test_authorized_urls_uses_correct_template(self):
+        """URL-адреса используют соответствующие шаблоны и доступны
+        только авторизованным пользователям.
+        """
+        templates_url_names = {
+            'posts/follow.html': '/follow/',
+            'posts/create_post.html': '/create/',
+        }
+        for template, address in templates_url_names.items():
+            with self.subTest(address=address):
+                response = self.authorized_client.get(address)
+                self.assertTemplateUsed(response, template)
+
+    # def test_authorized_urls_uses_correct_template(self):
+    #     """URL-адрес /create/ использует соответствующий шаблон и доступен
+    #     только авторизованным пользователям.
+    #     """
+    #     response = self.authorized_client.get('/create/')
+    #     self.assertTemplateUsed(response, 'posts/create_post.html')
 
     def test_author_urls_uses_correct_template(self):
         """URL-адрес posts/<post_id>/edit/ использует соответствующий шаблон и
