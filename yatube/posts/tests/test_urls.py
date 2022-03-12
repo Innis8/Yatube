@@ -91,13 +91,6 @@ class PostURLTest(TestCase):
                 response = self.authorized_client.get(address)
                 self.assertTemplateUsed(response, template)
 
-    # def test_authorized_urls_uses_correct_template(self):
-    #     """URL-адрес /create/ использует соответствующий шаблон и доступен
-    #     только авторизованным пользователям.
-    #     """
-    #     response = self.authorized_client.get('/create/')
-    #     self.assertTemplateUsed(response, 'posts/create_post.html')
-
     def test_author_urls_uses_correct_template(self):
         """URL-адрес posts/<post_id>/edit/ использует соответствующий шаблон и
         доступен только автору поста. Если вписать в response просто

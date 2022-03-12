@@ -6,10 +6,7 @@ from django.contrib.auth.decorators import login_required
 from posts.models import Post, Group, User, Follow
 from posts.forms import PostForm, CommentForm
 
-# from django.views.decorators.cache import cache_page
 
-
-# @cache_page(20)
 def index(request):
     template = 'posts/index.html'
     posts = Post.objects.all()
@@ -161,6 +158,7 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    if Follow.objects.filter(user=request.user, author=author).exists():
-        Follow.objects.filter(user=request.user, author=author).delete()
+    currently_follow = Follow.objects.filter(user=request.user, author=author)
+    if currently_follow.exists():
+        currently_follow.delete()
     return redirect(reverse('posts:profile', kwargs={'username': username}))
