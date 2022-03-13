@@ -43,7 +43,7 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     followers_count = author.following.all().count()
-    following_count = Follow.objects.filter(user=author).count()
+    following_count = author.follower.all().count()
     context = {
         'page_obj': page_obj,
         'author': author,
