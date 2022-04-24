@@ -12,9 +12,11 @@ class PostSerializer(serializers.ModelSerializer):
     group = serializers.SlugRelatedField(slug_field='slug',
             queryset=Group.objects.all(), required=False)
     tag = TagSerializer(many=True, required=False)
+    character_quantity = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'text', 'author', 'image', 'pub_date', 'group', 'tag')
+        fields = ('id', 'text', 'author', 'image', 'pub_date', 'group', 'tag',
+        'character_quantity')
         model = Post
 
     def create(self, validated_data):
@@ -27,3 +29,6 @@ class PostSerializer(serializers.ModelSerializer):
             current_tag, status = Tag.objects.get_or_create(**tag)
             TagPost.objects.create(tag=current_tag, post=post)
         return post
+
+    def get_character_quantity(self, obj):
+        return len(obj.text)
