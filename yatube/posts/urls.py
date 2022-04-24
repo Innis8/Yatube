@@ -12,7 +12,7 @@ router = DefaultRouter()
 # В роутере можно зарегистрировать любое количество пар "URL, viewset",
 # например,
 # router.register('owners', OwnerViewSet)
-router.register('api/v1/posts', views.PostViewSet)
+router.register('v1/posts', views.PostViewSet)
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -41,13 +41,13 @@ urlpatterns = [
         name='add_comment'
     ),
     path('follow/', views.follow_index, name='follow_index'),
-    path('api/v1/posts/', views.api_posts, name='api_posts'),
+    # path('api/v1/posts/', views.api_posts, name='api_posts'),
     # path('api/v1/posts/<int:post_id>/', views.get_post, name='get_post'),
-    path(
-        'api/v1/posts/<int:post_id>/',
-        views.api_posts_detail,
-        name='api_posts_detail'
-    ),
+    # path(
+    #     'api/v1/posts/<int:post_id>/',
+    #     views.api_posts_detail,
+    #     name='api_posts_detail'
+    # ),
     # для View-классов низкоуровневых
     # path('api/v1/posts/', views.APIPost.as_view()),
     # path('api/v1/posts/<int:post_id>/', views.APIPostDetail.as_view()),
@@ -58,5 +58,5 @@ urlpatterns = [
 
     # Все зарегистрированные в router пути доступны в router.urls
     # Включим их в головной urls.py
-    # path('', include(router.urls)),
+    path('api/', include(router.urls)),
 ]

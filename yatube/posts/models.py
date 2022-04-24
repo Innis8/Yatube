@@ -29,6 +29,13 @@ class Group(models.Model):
         return self.title
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     text = models.TextField(
         verbose_name='Текст поста',
@@ -61,6 +68,7 @@ class Post(models.Model):
         upload_to='posts/',
         blank=True
     )
+    tag = models.ManyToManyField(Tag, through='TagPost')
 
     class Meta:
         ordering = ('-pub_date',)
@@ -90,6 +98,11 @@ class Comment(CreatedModel):
         max_length=1000,
         verbose_name='Текст комментария',
         help_text='Написать комментарий'
+    )
+    created = models.DateTimeField(
+        "Дата добавления",
+        auto_now_add=True,
+        db_index=True
     )
 
     class Meta:
@@ -128,3 +141,11 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.user.username}-->@{self.author.username}'
+
+
+class TagPost(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.tag} {self.post}'

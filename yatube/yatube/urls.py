@@ -18,13 +18,19 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+# from rest_framework.routers import DefaultRouter
+# from posts import views
 
 handler404 = 'core.views.page_not_found'
 handler500 = 'core.views.server_error'
 handler403 = 'core.views.permission_denied'
 
+# router = DefaultRouter()
+# router.register('v1/posts', views.PostViewSet)
+
 urlpatterns = [
     path('', include('posts.urls', namespace='posts')),
+    # path('api/', include(router.urls)),
     path('auth/', include('users.urls', namespace='users')),
     path('auth/', include('django.contrib.auth.urls')),
     path('about/', include('about.urls', namespace='about')),

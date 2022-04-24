@@ -78,16 +78,21 @@
   <div class="row justify-content-center">
   {% for comment in comments %}
     <div class="card mb-4 col-md-6 offset-md-3 p-1">
-        <h5 class="card-header">
-          <a href="{% url 'posts:profile' comment.author.username %}">
-            {{ comment.author.username }}
-          </a>
-        </h5>
+        <div class="card-header">
+          <h5>
+            <a href="{% url 'posts:profile' comment.author.username %}">
+              {{ comment.author.username }}
+            </a>
+          </h5>
+          <p>
+            {{ comment.created }}
+          </p>
+        </div>
         <div class="card-body">
-        <p>
-         {{ comment.text }}
-        </p>
-      </div>
+          <p>
+           {{ comment.text }}
+          </p>
+        </div>
     </div>
   {% endfor %}
   </div>
