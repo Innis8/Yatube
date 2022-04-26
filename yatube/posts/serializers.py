@@ -13,10 +13,12 @@ class PostSerializer(serializers.ModelSerializer):
             queryset=Group.objects.all(), required=False)
     tag = TagSerializer(many=True, required=False)
     character_quantity = serializers.SerializerMethodField()
+    publication_date = serializers.DateTimeField(source='pub_date',
+        read_only=True)
 
     class Meta:
         fields = ('id', 'text', 'author', 'image', 'pub_date', 'group', 'tag',
-        'character_quantity')
+        'character_quantity', 'publication_date')
         model = Post
 
     def create(self, validated_data):
