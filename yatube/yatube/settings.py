@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     'www.innis8.pythonanywhere.com',
     'innis8.pythonanywhere.com',
     '51.250.82.42',
+    'highrock.ddns.net',
 ]
 
 
