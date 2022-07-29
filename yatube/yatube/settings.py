@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     'testserver',
     'www.innis8.pythonanywhere.com',
     'innis8.pythonanywhere.com',
-    '51.250.84.237',
+    '51.250.82.42',
 ]
 
 
