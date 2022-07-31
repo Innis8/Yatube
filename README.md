@@ -1,3 +1,1 @@
-# hw05_final
-
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+Сервис для публикации блогов Yatube. Возможна регистрация, восстановление пароля по почте, аутентификация по токену, комментирование записей, подписка на авторов и сообщества (объединение блогов в группу по какому-то общему признаку)
