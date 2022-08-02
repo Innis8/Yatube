@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -178,3 +180,8 @@ CACHES = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+sentry_sdk.init(
+    dsn = os.getenv('dsn'),
+    integrations=[DjangoIntegration()],
+)

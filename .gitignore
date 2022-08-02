@@ -154,3 +154,5 @@ yatube/posts/static/
 yatube/media/
 media/
 static_root/
+# дамп БД для переноса
+dump.json
