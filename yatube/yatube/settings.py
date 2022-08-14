@@ -17,6 +17,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+USE_POSTGRES = True
+USE_SENTRY = True
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -101,16 +105,24 @@ WSGI_APPLICATION = 'yatube.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('POSTGRES_USER'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT')
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
@@ -181,7 +193,8 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-sentry_sdk.init(
-    dsn = os.getenv('dsn'),
-    integrations=[DjangoIntegration()],
-)
+if USE_SENTRY:
+    sentry_sdk.init(
+        dsn=os.getenv('dsn'),
+        integrations=[DjangoIntegration()],
+    )
