@@ -19,57 +19,60 @@
 - Sentry (для удаленного сервера)
 
 ***
-Файл переменных окружения yatube/yatube/env_example нужно переименовать в .env и поместить туда необходимую информацию:
-- секретный ключ Django SECTRET_KEY, использующийся для хеширования и криптографических подписей. Сгенерировать свой ключ можно, например, на сайте https://djecrety.ir/ либо запустив в терминале команду python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+#### Предстартовые настройки
+Файл переменных окружения yatube/yatube/.env_example нужно переименовать в .env и поместить туда необходимую информацию:
+- секретный ключ Django SECTRET_KEY, использующийся для хеширования и криптографических подписей. Сгенерировать свой ключ можно, например, на сайте https://djecrety.ir/ либо выполнив в терминале команду:
+```
+python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+```
 - информацию относительно PostgreSQL DB
 - dsn от sentry.io
 
-Пj умолчанию проект настроен на PostgreSQL для работы на удаленном сервере. Для локального запуска нужно переключить БД на SQLite, переименовав дефолтный файл settings.py либо удалив его, и переименовав settings_with_sqlite3.py в settings.py
+По умолчанию проект настроен на PostgreSQL для работы на удаленном сервере. Для локального запуска нужно переключить БД на SQLite, выставив флаг USE_POSTGRES  в положение False в следующей строке в файле yatube/yatube/settings.py:
+<br/>
+`USE_POSTGRES = False`
+<br/>
+<br/>
+Отключить использование sentry также можно, переведя флаг USE_SENTRY в положение False:
+<br/>
+`USE_SENTRY = False`
 
 ***
 #### Start dev app
 Клонировать репозиторий и перейти в него в командной строке:
-`
-git clone https://github.com/Innis8/Yatube.git
-`
-`
-cd yatube
-`
-
+<br/>
+`git clone https://github.com/Innis8/Yatube.git`
+<br/>
+`cd yatube`
+<br/>
+<br/>
 Cоздать и активировать виртуальное окружение:
-`
-python -m venv env
-`
-`
-source venv/Scripts/activate
-`
-`
-python -m pip install --upgrade pip
-`
-
+<br/>
+`python -m venv env`
+<br/>
+`source venv/Scripts/activate`
+<br/>
+`python -m pip install --upgrade pip`
+<br/>
+<br/>
 Установить зависимости из файла requirements.txt:
-`
-pip install -r requirements.txt
-`
-
+<br/>
+`pip install -r requirements.txt`
+<br/>
+<br/>
 Выполнить миграции:
-`
-python manage.py migrate
-`
-
+<br/>
+`python manage.py migrate`
+<br/>
+<br/>
 Запустить сервер:
-`
-python manage.py runserver
-`
-
-Для отображения статики в settings.py внести изменения
+<br/>
+`python manage.py runserver`
+<br/>
+<br/>
+Для отображения статики в settings.py внести изменения:
+<br/>
 `DEBUG = True`
-
-Файл yatube/yatube/env_example нужно переименовать в .env и поместить туда необходимую информацию:
-- секретный ключ Django SECTRET_KEY, использующийся для хеширования и криптографических подписей. Сгенерировать свой ключ можно, например, на сайте https://djecrety.ir/ либо запустив в терминале команду:
-`python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
-- информацию относительно PostgreSQL DB (в случае использования этой ДБ на удаленном сервере)
-- dsn от sentry.io (в случае использования этой ДБ на удаленном сервере)
 
 ***
 #### Планы на будущее
