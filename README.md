@@ -28,12 +28,12 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 - информацию относительно PostgreSQL DB
 - dsn от sentry.io
 
-По умолчанию проект настроен на PostgreSQL для работы на удаленном сервере. Для локального запуска нужно переключить БД на SQLite, выставив флаг USE_POSTGRES  в положение False в следующей строке в файле yatube/yatube/settings.py:
+По умолчанию проект настроен на PostgreSQL для работы на удаленном сервере. Для локального запуска нужно переключить БД на SQLite, выставив флаг USE_POSTGRES  в положение False в файле yatube/yatube/settings.py:
 <br/>
 `USE_POSTGRES = False`
 <br/>
 <br/>
-Отключить использование sentry также можно, переведя флаг USE_SENTRY в положение False:
+Отключить использование sentry также можно, выставив флаг USE_SENTRY в положение False в файле yatube/yatube/settings.py:
 <br/>
 `USE_SENTRY = False`
 
